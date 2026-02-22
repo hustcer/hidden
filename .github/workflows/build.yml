@@ -28,12 +28,23 @@ jobs:
             MACOSX_DEPLOYMENT_TARGET=10.13 \
             2>&1 | xcbeautify --renderer github-actions
 
-      - name: Package app
+      - name: Package zip
         run: |
           cd build/Build/Products/Release
           ditto -c -k --keepParent "Hidden Bar.app" "Hidden-Bar-arm64.zip"
 
+      - name: Package dmg
+        run: |
+          cd build/Build/Products/Release
+          mkdir -p dmg-staging
+          cp -R "Hidden Bar.app" dmg-staging/
+          ln -s /Applications dmg-staging/Applications
+          hdiutil create -volname "Hidden Bar" -srcfolder dmg-staging \
+            -ov -format UDZO "Hidden-Bar-arm64.dmg"
+
       - uses: actions/upload-artifact@v6
         with:
           name: Hidden-Bar-arm64
-          path: build/Build/Products/Release/Hidden-Bar-arm64.zip
+          path: |
+            build/Build/Products/Release/Hidden-Bar-arm64.zip
+            build/Build/Products/Release/Hidden-Bar-arm64.dmg
