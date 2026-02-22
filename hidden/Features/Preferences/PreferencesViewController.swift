@@ -199,45 +199,39 @@ class PreferencesViewController: NSViewController {
 
 //MARK: - Show tutorial
 extension PreferencesViewController {
-    
+
     func createTutorialView() {
         NSLayoutConstraint.deactivate(arrowConstraints)
         arrowConstraints.removeAll()
 
         if Preferences.alwaysHiddenSectionEnabled {
-            alwayHideStatusBar()
-        }else {
+            alwaysHideStatusBar()
+        } else {
             hideStatusBar()
         }
     }
-    
-    func hideStatusBar() {
-        lblAlwayHidden.isHidden = true
-        arrowPointToAlwayHiddenImage.isHidden = true
-        statusBarStackView.removeAllSubViews()
+
+    private func populateStatusBar(imageNames: [String]) {
         let imageWidth: CGFloat = 16
-        
-        
-        let images = ["ico_1","ico_2","ico_3","seprated", "ico_collapse","ico_4","ico_5","ico_6","ico_7"].compactMap { imageName -> NSImageView? in
+        statusBarStackView.removeAllSubViews()
+
+        let imageViews = imageNames.compactMap { imageName -> NSImageView? in
             guard let image = NSImage(named: imageName) else { return nil }
             return NSImageView(image: image)
         }
-        
-        
-        for image in images {
-            statusBarStackView.addArrangedSubview(image)
-            image.translatesAutoresizingMaskIntoConstraints = false
+
+        for imageView in imageViews {
+            statusBarStackView.addArrangedSubview(imageView)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                image.widthAnchor.constraint(equalToConstant: imageWidth),
-                image.heightAnchor.constraint(equalToConstant: imageWidth)
-                
+                imageView.widthAnchor.constraint(equalToConstant: imageWidth),
+                imageView.heightAnchor.constraint(equalToConstant: imageWidth)
             ])
             if #available(OSX 10.14, *) {
-                image.contentTintColor = .labelColor
-            } else {
-                // Fallback on earlier versions
+                imageView.contentTintColor = .labelColor
             }
         }
+
         let dateTimeLabel = NSTextField()
         dateTimeLabel.stringValue = Date.dateString() + " " + Date.timeString()
         dateTimeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -246,67 +240,41 @@ extension PreferencesViewController {
         dateTimeLabel.sizeToFit()
         dateTimeLabel.backgroundColor = .clear
         statusBarStackView.addArrangedSubview(dateTimeLabel)
-        NSLayoutConstraint.activate([dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
+        NSLayoutConstraint.activate([
+            dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
         ])
-       
+    }
+
+    func hideStatusBar() {
+        lblAlwayHidden.isHidden = true
+        arrowPointToAlwayHiddenImage.isHidden = true
+        populateStatusBar(imageNames: ["ico_1","ico_2","ico_3","seprated", "ico_collapse","ico_4","ico_5","ico_6","ico_7"])
+
         let hiddenArrowConstraint = arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[3].centerXAnchor)
         arrowConstraints.append(hiddenArrowConstraint)
         NSLayoutConstraint.activate([hiddenArrowConstraint])
     }
 
-    func alwayHideStatusBar() {
+    func alwaysHideStatusBar() {
         lblAlwayHidden.isHidden = false
         arrowPointToAlwayHiddenImage.isHidden = false
-        statusBarStackView.removeAllSubViews()
-        let imageWidth: CGFloat = 16
-        
-        
-        let images = ["ico_1","ico_2","ico_3","ico_4", "seprated_1","ico_5","ico_6","seprated", "ico_collapse","ico_7"].compactMap { imageName -> NSImageView? in
-            guard let image = NSImage(named: imageName) else { return nil }
-            return NSImageView(image: image)
-        }
-        
-        
-        for image in images {
-            statusBarStackView.addArrangedSubview(image)
-            image.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                image.widthAnchor.constraint(equalToConstant: imageWidth),
-                image.heightAnchor.constraint(equalToConstant: imageWidth)
-                
-            ])
-            if #available(OSX 10.14, *) {
-                image.contentTintColor = .labelColor
-            } else {
-                // Fallback on earlier versions
-            }
-        }
-        let dateTimeLabel = NSTextField()
-        dateTimeLabel.stringValue = Date.dateString() + " " + Date.timeString()
-        dateTimeLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateTimeLabel.isBezeled = false
-        dateTimeLabel.isEditable = false
-        dateTimeLabel.sizeToFit()
-        dateTimeLabel.backgroundColor = .clear
-        statusBarStackView.addArrangedSubview(dateTimeLabel)
-        NSLayoutConstraint.activate([dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
-        ])
-        
-        let alwayHiddenArrowConstraint = arrowPointToAlwayHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[4].centerXAnchor)
+        populateStatusBar(imageNames: ["ico_1","ico_2","ico_3","ico_4", "seprated_1","ico_5","ico_6","seprated", "ico_collapse","ico_7"])
+
+        let alwaysHiddenArrowConstraint = arrowPointToAlwayHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[4].centerXAnchor)
         let hiddenArrowConstraint = arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[7].centerXAnchor)
-        arrowConstraints.append(contentsOf: [alwayHiddenArrowConstraint, hiddenArrowConstraint])
-        NSLayoutConstraint.activate([alwayHiddenArrowConstraint, hiddenArrowConstraint])
+        arrowConstraints.append(contentsOf: [alwaysHiddenArrowConstraint, hiddenArrowConstraint])
+        NSLayoutConstraint.activate([alwaysHiddenArrowConstraint, hiddenArrowConstraint])
     }
-    
+
     @IBAction func btnAlwayHiddenHelpPressed(_ sender: NSButton) {
-        self.showHowToUseAlwayHiddenPopover(sender: sender)
+        self.showHowToUseAlwaysHiddenPopover(sender: sender)
     }
-    
-    private func showHowToUseAlwayHiddenPopover(sender: NSButton) {
+
+    private func showHowToUseAlwaysHiddenPopover(sender: NSButton) {
         let controller = NSViewController()
         let label = NSTextField()
         let text = NSLocalizedString("Tutorial text", comment: "Step by step tutorial")
-        
+
         label.stringValue = text
         label.isBezeled = false
         label.isEditable = false
@@ -320,7 +288,7 @@ extension PreferencesViewController {
         ])
         label.translatesAutoresizingMaskIntoConstraints = false
         controller.view = view
-        
+
         let popover = NSPopover()
         popover.contentViewController = controller
         let fittingSize = controller.view.fittingSize

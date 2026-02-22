@@ -255,7 +255,7 @@ class StatusBarController {
 //MARK: - Alway hide feature
 extension StatusBarController {
     private func setupAlwayHideStatusBar() {
-        NotificationCenter.default.addObserver(self, selector: #selector(toggleStatusBarIfNeeded), name: .alwayHideToggle, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(toggleStatusBarIfNeeded), name: .alwaysHideToggle, object: nil)
         toggleStatusBarIfNeeded()
     }
     @objc private func toggleStatusBarIfNeeded() {
