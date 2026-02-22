@@ -200,13 +200,13 @@ class StatusBarController {
     
     private func startTimerToAutoHide() {
         timer?.invalidate()
-        self.timer = Timer.scheduledTimer(withTimeInterval: Preferences.numberOfSecondForAutoHide, repeats: false) { [weak self] _ in
-            DispatchQueue.main.async {
-                if Preferences.isAutoHide {
-                    self?.collapseMenuBar()
-                }
+        let interval = Preferences.numberOfSecondForAutoHide
+        self.timer = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
+            if Preferences.isAutoHide {
+                self?.collapseMenuBar()
             }
         }
+        RunLoop.main.add(self.timer!, forMode: .common)
     }
     
     private func getContextMenu() -> NSMenu {

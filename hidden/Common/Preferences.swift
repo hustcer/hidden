@@ -9,17 +9,29 @@
 import Foundation
 
 enum Preferences {
-    
+
+    private static var _cachedGlobalKey: GlobalKeybindPreferences?
+    private static var _globalKeyCacheValid = false
+
     static var globalKey: GlobalKeybindPreferences? {
         get {
-            guard let data = UserDefaults.standard.value(forKey: UserDefaults.Key.globalKey) as? Data else { return nil }
-            return try? JSONDecoder().decode(GlobalKeybindPreferences.self, from: data)
+            if _globalKeyCacheValid { return _cachedGlobalKey }
+            guard let data = UserDefaults.standard.value(forKey: UserDefaults.Key.globalKey) as? Data else {
+                _cachedGlobalKey = nil
+                _globalKeyCacheValid = true
+                return nil
+            }
+            _cachedGlobalKey = try? JSONDecoder().decode(GlobalKeybindPreferences.self, from: data)
+            _globalKeyCacheValid = true
+            return _cachedGlobalKey
         }
-        
+
         set {
             guard let data = try? JSONEncoder().encode(newValue) else { return }
             UserDefaults.standard.set(data, forKey: UserDefaults.Key.globalKey)
-            
+            _cachedGlobalKey = newValue
+            _globalKeyCacheValid = true
+
             NotificationCenter.default.post(Notification(name: .prefsChanged))
         }
     }

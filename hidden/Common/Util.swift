@@ -29,8 +29,7 @@ class Util {
             SMLoginItemSetEnabled(Constant.launcherAppId as CFString, isAutoStart)
         }
 
-        let runningApps = NSWorkspace.shared.runningApplications
-        let isRunning = !runningApps.filter { $0.bundleIdentifier == Constant.launcherAppId }.isEmpty
+        let isRunning = NSWorkspace.shared.runningApplications.contains { $0.bundleIdentifier == Constant.launcherAppId }
 
         if isRunning {
             DistributedNotificationCenter.default().post(name: Notification.Name("killLauncher"),
