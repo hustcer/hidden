@@ -75,9 +75,8 @@ class StatusBarController {
     }
 
     deinit {
-        // Clean up NotificationCenter observers to prevent memory leaks
-        NotificationCenter.default.removeObserver(self, name: .prefsChanged, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .alwayHideToggle, object: nil)
+        // Clean up all NotificationCenter observers to prevent memory leaks
+        NotificationCenter.default.removeObserver(self)
 
         // Invalidate timer to prevent retain cycles
         timer?.invalidate()
