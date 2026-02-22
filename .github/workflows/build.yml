@@ -1,0 +1,36 @@
+name: Build arm64
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve Swift packages
+        run: xcodebuild -resolvePackageDependencies -project "Hidden Bar.xcodeproj" -scheme "Hidden Bar"
+
+      - name: Build arm64 app
+        run: |
+          xcodebuild build \
+            -project "Hidden Bar.xcodeproj" \
+            -scheme "Hidden Bar" \
+            -configuration Release \
+            -arch arm64 \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package app
+        run: |
+          cd build/Build/Products/Release
+          ditto -c -k --keepParent "Hidden Bar.app" "Hidden-Bar-arm64.zip"
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: Hidden-Bar-arm64
+          path: build/Build/Products/Release/Hidden-Bar-arm64.zip
