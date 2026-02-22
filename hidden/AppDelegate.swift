@@ -17,8 +17,10 @@ class AppDelegate: NSObject, NSApplicationDelegate{
     
     var hotKey: HotKey? {
         didSet {
+            oldValue?.keyDownHandler = nil
+
             guard let hotKey = hotKey else { return }
-            
+
             hotKey.keyDownHandler = { [weak self] in
                 self?.statusBarController.expandCollapseIfNeeded()
             }

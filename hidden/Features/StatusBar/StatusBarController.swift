@@ -139,11 +139,11 @@ class StatusBarController {
     
     private func hideSeparators() {
         guard self.isBtnAlwaysHiddenValidPosition else {return}
-        
+
         Preferences.areSeparatorsHidden = true
-        
+
         if !self.isCollapsed {
-            self.btnSeparate.length = self.btnHiddenLength
+            self.btnSeparate.length = 1
         }
         self.btnAlwaysHidden?.length = self.btnAlwaysHiddenEnableExpandCollapseLength
     }

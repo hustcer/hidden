@@ -218,8 +218,9 @@ extension PreferencesViewController {
         let imageWidth: CGFloat = 16
         
         
-        let images = ["ico_1","ico_2","ico_3","seprated", "ico_collapse","ico_4","ico_5","ico_6","ico_7"].map { imageName in
-            NSImageView(image: NSImage(named: imageName)!)
+        let images = ["ico_1","ico_2","ico_3","seprated", "ico_collapse","ico_4","ico_5","ico_6","ico_7"].compactMap { imageName -> NSImageView? in
+            guard let image = NSImage(named: imageName) else { return nil }
+            return NSImageView(image: image)
         }
         
         
@@ -260,8 +261,9 @@ extension PreferencesViewController {
         let imageWidth: CGFloat = 16
         
         
-        let images = ["ico_1","ico_2","ico_3","ico_4", "seprated_1","ico_5","ico_6","seprated", "ico_collapse","ico_7"].map { imageName in
-            NSImageView(image: NSImage(named: imageName)!)
+        let images = ["ico_1","ico_2","ico_3","ico_4", "seprated_1","ico_5","ico_6","seprated", "ico_collapse","ico_7"].compactMap { imageName -> NSImageView? in
+            guard let image = NSImage(named: imageName) else { return nil }
+            return NSImageView(image: image)
         }
         
         
@@ -321,11 +323,12 @@ extension PreferencesViewController {
         
         let popover = NSPopover()
         popover.contentViewController = controller
-        popover.contentSize = controller.view.frame.size
-        
+        let fittingSize = controller.view.fittingSize
+        popover.contentSize = NSSize(width: max(fittingSize.width, 200), height: max(fittingSize.height, 40))
+
         popover.behavior = .transient
         popover.animates = true
-        
-        popover.show(relativeTo: self.view.bounds, of: sender , preferredEdge: NSRectEdge.maxX)
+
+        popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: NSRectEdge.maxX)
     }
 }
