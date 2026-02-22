@@ -278,6 +278,7 @@ extension PreferencesViewController {
         label.stringValue = text
         label.isBezeled = false
         label.isEditable = false
+        label.translatesAutoresizingMaskIntoConstraints = false
         let view = NSView()
         view.addSubview(label)
         NSLayoutConstraint.activate([
@@ -286,7 +287,6 @@ extension PreferencesViewController {
             label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             label.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        label.translatesAutoresizingMaskIntoConstraints = false
         controller.view = view
 
         let popover = NSPopover()

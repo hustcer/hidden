@@ -65,7 +65,7 @@ class StatusBarController {
     init() {
 
         setupUI()
-        setupAlwayHideStatusBar()
+        setupAlwaysHideStatusBar()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             self?.collapseMenuBar()
         }
@@ -82,7 +82,9 @@ class StatusBarController {
         timer?.invalidate()
         timer = nil
 
-        // Properly remove status items
+        // Properly remove all status items
+        NSStatusBar.system.removeStatusItem(btnExpandCollapse)
+        NSStatusBar.system.removeStatusItem(btnSeparate)
         if let statusItem = self.btnAlwaysHidden {
             NSStatusBar.system.removeStatusItem(statusItem)
         }
@@ -252,9 +254,9 @@ class StatusBarController {
 }
 
 
-//MARK: - Alway hide feature
+//MARK: - Always hide feature
 extension StatusBarController {
-    private func setupAlwayHideStatusBar() {
+    private func setupAlwaysHideStatusBar() {
         NotificationCenter.default.addObserver(self, selector: #selector(toggleStatusBarIfNeeded), name: .alwaysHideToggle, object: nil)
         toggleStatusBarIfNeeded()
     }

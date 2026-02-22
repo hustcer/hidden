@@ -27,8 +27,12 @@ enum Preferences {
         }
 
         set {
-            guard let data = try? JSONEncoder().encode(newValue) else { return }
-            UserDefaults.standard.set(data, forKey: UserDefaults.Key.globalKey)
+            if let newValue = newValue {
+                guard let data = try? JSONEncoder().encode(newValue) else { return }
+                UserDefaults.standard.set(data, forKey: UserDefaults.Key.globalKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: UserDefaults.Key.globalKey)
+            }
             _cachedGlobalKey = newValue
             _globalKeyCacheValid = true
 

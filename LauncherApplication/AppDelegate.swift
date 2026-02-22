@@ -37,7 +37,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let url = URL(fileURLWithPath: newPath)
             if #available(macOS 10.15, *) {
                 let config = NSWorkspace.OpenConfiguration()
-                NSWorkspace.shared.openApplication(at: url, configuration: config)
+                NSWorkspace.shared.openApplication(at: url, configuration: config) { _, error in
+                    if let error = error {
+                        print("Failed to launch main app: \(error)")
+                    }
+                }
             } else {
                 NSWorkspace.shared.launchApplication(newPath)
             }
