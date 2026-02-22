@@ -1,7 +1,9 @@
 name: Build arm64
 
 on:
+  workflow_dispatch:
   push:
+    tags: ['v*.*']
     branches: [main]
 
 jobs:
