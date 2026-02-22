@@ -15,6 +15,7 @@ jobs:
 
       - name: Build arm64 app
         run: |
+          set -o pipefail
           xcodebuild build \
             -project "Hidden Bar.xcodeproj" \
             -scheme "Hidden Bar" \
@@ -23,7 +24,8 @@ jobs:
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | xcbeautify --renderer github-actions
 
       - name: Package app
         run: |
