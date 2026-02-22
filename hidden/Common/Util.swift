@@ -14,11 +14,24 @@ import ServiceManagement
 class Util {
     
     static func setUpAutoStart(isAutoStart:Bool) {
+        if #available(macOS 13.0, *) {
+            let service = SMAppService.loginItem(identifier: Constant.launcherAppId)
+            do {
+                if isAutoStart {
+                    try service.register()
+                } else {
+                    try service.unregister()
+                }
+            } catch {
+                print("Failed to \(isAutoStart ? "register" : "unregister") login item: \(error)")
+            }
+        } else {
+            SMLoginItemSetEnabled(Constant.launcherAppId as CFString, isAutoStart)
+        }
+
         let runningApps = NSWorkspace.shared.runningApplications
         let isRunning = !runningApps.filter { $0.bundleIdentifier == Constant.launcherAppId }.isEmpty
-        
-        SMLoginItemSetEnabled(Constant.launcherAppId as CFString, isAutoStart)
-        
+
         if isRunning {
             DistributedNotificationCenter.default().post(name: Notification.Name("killLauncher"),
                                                          object: Bundle.main.bundleIdentifier!)

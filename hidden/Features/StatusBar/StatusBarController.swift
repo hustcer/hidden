@@ -22,8 +22,8 @@ class StatusBarController {
     private var btnHiddenLength: CGFloat =  20
     private let btnHiddenCollapseLength: CGFloat = 10000
     
-    private let btnAlwaysHiddenLength: CGFloat = Preferences.alwaysHiddenSectionEnabled ? 20 : 0
-    private let btnAlwaysHiddenEnableExpandCollapseLength: CGFloat = Preferences.alwaysHiddenSectionEnabled ? 10000 : 0
+    private var btnAlwaysHiddenLength: CGFloat { Preferences.alwaysHiddenSectionEnabled ? 20 : 0 }
+    private var btnAlwaysHiddenEnableExpandCollapseLength: CGFloat { Preferences.alwaysHiddenSectionEnabled ? 10000 : 0 }
     
     private let imgIconLine = NSImage(named:NSImage.Name("ic_line"))
     
@@ -183,8 +183,11 @@ class StatusBarController {
         
         if Preferences.useFullStatusBarOnExpandEnabled {
             NSApp.setActivationPolicy(.regular)
-            NSApp.activate(ignoringOtherApps: true)
-            
+            if #available(macOS 14.0, *) {
+                NSApp.activate()
+            } else {
+                NSApp.activate(ignoringOtherApps: true)
+            }
         }
     }
     

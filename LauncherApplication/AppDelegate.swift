@@ -34,7 +34,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let appName = "Hidden Bar"
             components.append(appName) //main app name
             let newPath = NSString.path(withComponents: components)
-            NSWorkspace.shared.launchApplication(newPath)
+            let url = URL(fileURLWithPath: newPath)
+            if #available(macOS 10.15, *) {
+                let config = NSWorkspace.OpenConfiguration()
+                NSWorkspace.shared.openApplication(at: url, configuration: config)
+            } else {
+                NSWorkspace.shared.launchApplication(newPath)
+            }
         }
         else {
             self.terminate()
