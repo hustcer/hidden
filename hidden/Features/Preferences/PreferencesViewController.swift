@@ -22,6 +22,8 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var arrowPointToHiddenImage: NSImageView!
     @IBOutlet weak var arrowPointToAlwayHiddenImage: NSImageView!
     @IBOutlet weak var lblAlwayHidden: NSTextField!
+
+    private var arrowConstraints: [NSLayoutConstraint] = []
     
     
     
@@ -161,7 +163,7 @@ class PreferencesViewController: NSViewController {
         checkBoxAutoHide.state = Preferences.isAutoHide ? .on : .off
         checkBoxShowPreferences.state = Preferences.isShowPreference ? .on : .off
         checkBoxShowAlwaysHiddenSection.state = Preferences.alwaysHiddenSectionEnabled ? .on : .off
-        timePopup.selectItem(at: SelectedSecond.secondToPossition(seconds: Preferences.numberOfSecondForAutoHide))
+        timePopup.selectItem(at: SelectedSecond.secondToPosition(seconds: Preferences.numberOfSecondForAutoHide))
     }
     
     private func loadHotkey() {
@@ -199,6 +201,9 @@ class PreferencesViewController: NSViewController {
 extension PreferencesViewController {
     
     func createTutorialView() {
+        NSLayoutConstraint.deactivate(arrowConstraints)
+        arrowConstraints.removeAll()
+
         if Preferences.alwaysHiddenSectionEnabled {
             alwayHideStatusBar()
         }else {
@@ -243,11 +248,11 @@ extension PreferencesViewController {
         NSLayoutConstraint.activate([dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
         ])
        
-        NSLayoutConstraint.activate([
-            arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[3].centerXAnchor)
-        ])
+        let hiddenArrowConstraint = arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[3].centerXAnchor)
+        arrowConstraints.append(hiddenArrowConstraint)
+        NSLayoutConstraint.activate([hiddenArrowConstraint])
     }
-    
+
     func alwayHideStatusBar() {
         lblAlwayHidden.isHidden = false
         arrowPointToAlwayHiddenImage.isHidden = false
@@ -285,12 +290,10 @@ extension PreferencesViewController {
         NSLayoutConstraint.activate([dateTimeLabel.heightAnchor.constraint(equalToConstant: imageWidth)
         ])
         
-        NSLayoutConstraint.activate([
-            arrowPointToAlwayHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[4].centerXAnchor)
-        ])
-        NSLayoutConstraint.activate([
-            arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[7].centerXAnchor)
-        ])
+        let alwayHiddenArrowConstraint = arrowPointToAlwayHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[4].centerXAnchor)
+        let hiddenArrowConstraint = arrowPointToHiddenImage.centerXAnchor.constraint(equalTo: statusBarStackView.arrangedSubviews[7].centerXAnchor)
+        arrowConstraints.append(contentsOf: [alwayHiddenArrowConstraint, hiddenArrowConstraint])
+        NSLayoutConstraint.activate([alwayHiddenArrowConstraint, hiddenArrowConstraint])
     }
     
     @IBAction func btnAlwayHiddenHelpPressed(_ sender: NSButton) {

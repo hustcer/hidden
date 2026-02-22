@@ -30,7 +30,6 @@ class AppDelegate: NSObject, NSApplicationDelegate{
         registerDefaultValues()
         setupHotKey()
         openPreferencesIfNeeded()
-        detectLTRLang()
     }
     
     func openPreferencesIfNeeded() {
@@ -59,11 +58,4 @@ class AppDelegate: NSObject, NSApplicationDelegate{
         hotKey = HotKey(keyCombo: KeyCombo(carbonKeyCode: globalKey.keyCode, carbonModifiers: globalKey.carbonFlags))
     }
     
-    func detectLTRLang() {
-        // Languages like Arabic uses right to left (RTL) writing direction,
-        // so some behavier of the app needs to be changed in these cases
-        
-        Constant.isUsingLTRLanguage = (NSApplication.shared.userInterfaceLayoutDirection == .leftToRight)
-    }
-   
 }
